@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#2563EB">
+<meta name="theme-color" content="#0B1E3A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WaQti">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
 <title>WaQti — Démo</title>
 <style>
   :root{
@@ -155,13 +162,13 @@
 
   <!-- TOAST -->
   <div class="toast" id="toast">
-    <div class="ti">🔔</div>
+    <div class="ti"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-6v-5a7 7 0 0 0-5-6.71V3a2 2 0 0 0-4 0v1.29A7 7 0 0 0 5 11v5l-2 2v1h18v-1z"/></svg></div>
     <div><b id="toastTitle"></b><span id="toastMsg"></span></div>
   </div>
 
   <!-- YOUR TURN OVERLAY -->
   <div class="turn" id="turn">
-    <div class="big">🎉</div>
+    <div class="big"><svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" opacity=".35"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg></div>
     <h2 id="turnTitle"></h2>
     <p id="turnMsg"></p>
     <div class="num" id="turnNum"></div>
@@ -172,7 +179,7 @@
   <div class="screen active" id="s-login">
     <div style="flex:1;overflow-y:auto">
       <div class="login-hero">
-        <div class="logo">⏱️</div>
+        <div class="logo"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9.5 2h5"/><path d="M12 2v2"/></svg></div>
         <h1 id="l-appname"><span class="wordmark">Wa<span class="qclock"></span><span class="qtail"></span>ti</span></h1>
         <p id="l-slogan">Gérez votre temps intelligemment</p>
         <div class="by-connectsoft">ConnectSoft — Mauritanian Startup</div>
@@ -202,8 +209,8 @@
       <input class="field" id="r-pass" type="password" placeholder="Mot de passe (min 6 car.)">
       <div class="sect" id="r-iam">Je suis :</div>
       <div class="role-row">
-        <button class="on" onclick="setRole(this)">👤 <span id="r-client">Client</span></button>
-        <button onclick="setRole(this)">🏢 <span id="r-manager">Gestionnaire</span></button>
+        <button class="on" onclick="setRole(this)"><span id="r-client">Client</span></button>
+        <button onclick="setRole(this)"><span id="r-manager">Gestionnaire</span></button>
       </div>
       <button class="btn grad" onclick="doRegister()" id="r-btn">Créer mon compte</button>
       <div class="link-row"><span id="r-hasacc">Déjà un compte ?</span> <a onclick="go('s-login')" id="r-login">Se connecter</a></div>
@@ -217,7 +224,7 @@
       <div><h1 id="o-title">Vérification</h1><div class="sub" id="o-sub">Code envoyé par SMS</div></div>
     </div>
     <div class="body" style="text-align:center;padding-top:30px">
-      <div style="font-size:48px;margin-bottom:8px">💬</div>
+      <div style="margin-bottom:14px"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg></div>
       <p style="font-size:14.5px;color:var(--text2);padding:0 20px" id="o-msg">Un code à 6 chiffres a été envoyé par SMS au <b id="o-phone">+222 32 34 56 78</b></p>
       <div class="otp-row">
         <input class="otp-box" maxlength="1" inputmode="numeric" oninput="otpNext(this,0)">
@@ -235,7 +242,7 @@
   <!-- HOME -->
   <div class="screen" id="s-home">
     <div class="hdr">
-      <h1 id="h-hello">Salam, Sidatt 👋</h1>
+      <h1 id="h-hello">Salam, Sidatt</h1>
       <div class="sub" id="h-sub">Où voulez-vous prendre un ticket ?</div>
     </div>
     <div class="body">
@@ -258,7 +265,7 @@
       <div><h1 id="e-name"></h1><div class="sub" id="e-addr"></div></div>
     </div>
     <div class="body">
-      <div class="info-strip">📍 <span id="e-open">Ouvert · 08h00 – 16h00 · File en temps réel</span></div>
+      <div class="info-strip"><span id="e-open">Ouvert · 08h00 – 16h00 · File en temps réel</span></div>
       <div class="sect" id="e-services">Services disponibles</div>
       <div id="svcList"></div>
     </div>
@@ -280,11 +287,11 @@
       </div>
       <div class="sect" id="c-prio-t">Priorité</div>
       <div class="prio">
-        <button class="on" id="p1" onclick="setPrio(this)">👤 <span id="pt1">Normal</span></button>
-        <button id="p2" onclick="setPrio(this)">👵 <span id="pt2">Personne âgée</span></button>
-        <button id="p3" onclick="setPrio(this)">🤰 <span id="pt3">Femme enceinte</span></button>
+        <button class="on" id="p1" onclick="setPrio(this)"><span id="pt1">Normal</span></button>
+        <button id="p2" onclick="setPrio(this)"><span id="pt2">Personne âgée</span></button>
+        <button id="p3" onclick="setPrio(this)"><span id="pt3">Femme enceinte</span></button>
       </div>
-      <button class="btn grad" onclick="takeTicket()" id="c-btn">🎫 Confirmer mon ticket</button>
+      <button class="btn grad" onclick="takeTicket()" id="c-btn">Confirmer mon ticket</button>
     </div>
   </div>
 
@@ -307,7 +314,7 @@
       <div class="progress-card">
         <b style="font-size:14px" id="t-prog">Progression de la file</b>
         <div class="pbar"><div id="t-bar" style="width:12%"></div></div>
-        <div class="plabel"><span id="t-cur">En cours : <b>A-040</b></span><span id="t-leave">🚶 Partez vers 17h05</span></div>
+        <div class="plabel"><span id="t-cur">En cours : <b>A-040</b></span><span id="t-leave">Partez vers 17h05</span></div>
       </div>
       <button class="btn ghost" onclick="resetDemo()" id="t-cancel">Annuler le ticket</button>
     </div>
@@ -317,7 +324,7 @@
   <div class="screen" id="s-tickets">
     <div class="hdr"><h1 id="mt-title">Mes tickets</h1><div class="sub" id="mt-sub">Vos files d'attente actives</div></div>
     <div class="body" id="ticketsBody">
-      <div class="empty"><div class="e-ic">🎫</div><b id="mt-empty">Aucun ticket actif</b><p style="font-size:13.5px;margin-top:6px" id="mt-empty2">Recherchez un établissement pour prendre un ticket.</p></div>
+      <div class="empty"><b id="mt-empty">Aucun ticket actif</b><p style="font-size:13.5px;margin-top:6px" id="mt-empty2">Recherchez un établissement pour prendre un ticket.</p></div>
     </div>
     <div class="nav">
       <button onclick="go('s-home')"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span id="nt-home2">Accueil</span></button>
@@ -329,7 +336,7 @@
   <!-- PROFILE -->
   <div class="screen" id="s-profile">
     <div class="hdr" style="text-align:center">
-      <div class="logo" style="width:70px;height:70px;font-size:32px;margin-bottom:10px">👤</div>
+      <div class="logo" style="width:70px;height:70px;margin-bottom:10px"><svg width="34" height="34" viewBox="0 0 24 24" fill="white"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/></svg></div>
       <h1>Sidatt Belkheir</h1><div class="sub">+222 32 34 56 78</div>
     </div>
     <div class="body">
@@ -352,68 +359,76 @@
 <script>
 /* ============ DATA ============ */
 const ETABS = [
-  {id:1, cat:'sante', ic:'🏥', bg:'#EFF6FF', fr:'Hôpital Cheikh Zayed', ar:'مستشفى الشيخ زايد', addr:'Tevragh Zeina, Nouakchott', wait:12, services:[
+  {id:1, cat:'sante', ic:'hosp', bg:'#EFF6FF', fr:'Hôpital Cheikh Zayed', ar:'مستشفى الشيخ زايد', addr:'Tevragh Zeina, Nouakchott', wait:12, services:[
     {fr:'Médecine générale', ar:'الطب العام', q:12, t:35},
     {fr:'Cardiologie', ar:'أمراض القلب', q:7, t:21},
     {fr:'Pédiatrie', ar:'طب الأطفال', q:9, t:27},
     {fr:'Laboratoire d\'analyses', ar:'مختبر التحاليل', q:5, t:15}]},
-  {id:2, cat:'sante', ic:'🏥', bg:'#EFF6FF', fr:'Centre Hospitalier National', ar:'المستشفى الوطني', addr:'Ksar, Nouakchott', wait:18, services:[
+  {id:2, cat:'sante', ic:'hosp', bg:'#EFF6FF', fr:'Centre Hospitalier National', ar:'المستشفى الوطني', addr:'Ksar, Nouakchott', wait:18, services:[
     {fr:'Urgences consultations', ar:'استشارات الاستعجالات', q:18, t:50},
     {fr:'Radiologie', ar:'الأشعة', q:6, t:18},
     {fr:'Gynécologie', ar:'أمراض النساء', q:10, t:30}]},
-  {id:3, cat:'sante', ic:'⚕️', bg:'#ECFDF5', fr:'Centre de Santé Sebkha', ar:'مركز صحة السبخة', addr:'Sebkha, Nouakchott', wait:8, services:[
+  {id:3, cat:'sante', ic:'health', bg:'#ECFDF5', fr:'Centre de Santé Sebkha', ar:'مركز صحة السبخة', addr:'Sebkha, Nouakchott', wait:8, services:[
     {fr:'Consultation générale', ar:'استشارة عامة', q:8, t:24},
     {fr:'Vaccination', ar:'التلقيح', q:4, t:12}]},
-  {id:4, cat:'banque', ic:'🏦', bg:'#FFFBEB', fr:'Banque BMCI — Agence Centrale', ar:'بنك BMCI — الوكالة المركزية', addr:'Av. Gamal Abdel Nasser', wait:9, services:[
+  {id:4, cat:'banque', ic:'bank', bg:'#FFFBEB', fr:'Banque BMCI — Agence Centrale', ar:'بنك BMCI — الوكالة المركزية', addr:'Av. Gamal Abdel Nasser', wait:9, services:[
     {fr:'Guichet retrait / dépôt', ar:'شباك السحب والإيداع', q:9, t:22},
     {fr:'Ouverture de compte', ar:'فتح حساب', q:4, t:16},
     {fr:'Service crédit', ar:'خدمة القروض', q:3, t:15}]},
-  {id:5, cat:'admin', ic:'🏛️', bg:'#F5F3FF', fr:'ANRPTS — État Civil', ar:'الوكالة الوطنية — الحالة المدنية', addr:'Ilot K, Nouakchott', wait:22, services:[
+  {id:5, cat:'admin', ic:'gov', bg:'#F5F3FF', fr:'ANRPTS — État Civil', ar:'الوكالة الوطنية — الحالة المدنية', addr:'Ilot K, Nouakchott', wait:22, services:[
     {fr:'Carte d\'identité nationale', ar:'بطاقة التعريف الوطنية', q:22, t:60},
     {fr:'Passeport', ar:'جواز السفر', q:14, t:42},
     {fr:'Acte de naissance', ar:'شهادة الميلاد', q:11, t:30}]},
-  {id:6, cat:'admin', ic:'🏛️', bg:'#F5F3FF', fr:'Commune de Tevragh Zeina', ar:'بلدية تفرغ زينة', addr:'Tevragh Zeina', wait:6, services:[
+  {id:6, cat:'admin', ic:'gov', bg:'#F5F3FF', fr:'Commune de Tevragh Zeina', ar:'بلدية تفرغ زينة', addr:'Tevragh Zeina', wait:6, services:[
     {fr:'Légalisation de documents', ar:'تصديق الوثائق', q:6, t:14},
     {fr:'Certificat de résidence', ar:'شهادة الإقامة', q:5, t:12}]},
 ];
 
+
+const ICONS = {
+  hosp:'<svg width="26" height="26" viewBox="0 0 24 24" fill="#2563EB"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-3 11h-3v3h-2v-3H8v-2h3V9h2v3h3z"/></svg>',
+  health:'<svg width="26" height="26" viewBox="0 0 24 24" fill="#059669"><path d="M12 21s-8-5.5-8-11a5 5 0 0 1 8-4 5 5 0 0 1 8 4c0 5.5-8 11-8 11z" opacity=".25"/><path d="M13 8h-2v3H8v2h3v3h2v-3h3v-2h-3z" fill="#059669"/><path d="M12 21s-8-5.5-8-11a5 5 0 0 1 8-4 5 5 0 0 1 8 4c0 5.5-8 11-8 11z" fill="none" stroke="#059669" stroke-width="1.6"/></svg>',
+  bank:'<svg width="26" height="26" viewBox="0 0 24 24" fill="#B45309"><path d="M12 2L2 8h20zM4 10v8h3v-8zm6.5 0v8h3v-8zM17 10v8h3v-8zM2 20h20v2H2z"/></svg>',
+  gov:'<svg width="26" height="26" viewBox="0 0 24 24" fill="#6D28D9"><path d="M12 2L3 7v2h18V7zM5 11v7H3v2h18v-2h-2v-7h-3v7h-2.5v-7h-3v7H8v-7z"/></svg>'
+};
+
 const STR = {
-  fr:{slogan:'Gérez votre temps intelligemment', btn:'Se connecter', hello:'Salam, Sidatt 👋', sub:'Où voulez-vous prendre un ticket ?',
+  fr:{slogan:'Gérez votre temps intelligemment', btn:'Se connecter', hello:'Salam, Sidatt', sub:'Où voulez-vous prendre un ticket ?',
     search:'Rechercher un établissement...', nearby:'À proximité — Nouakchott', home:'Accueil', tickets:'Mes tickets', profile:'Profil',
-    all:'Tous', sante:'🏥 Santé', banque:'🏦 Banques', admin:'🏛️ Administrations',
+    all:'Tous', sante:'Santé', banque:'Banques', admin:'Administrations',
     open:'Ouvert · 08h00 – 16h00 · File en temps réel', services:'Services disponibles', persons:'personnes en attente', min:'min',
     take:'Prendre un ticket', info:'Informations', etab:'Établissement', svc:'Service', waiting:'Personnes en attente', est:'Temps estimé',
-    prio:'Priorité', normal:'Normal', old:'Personne âgée', preg:'Femme enceinte', confirm:'🎫 Confirmer mon ticket',
+    prio:'Priorité', normal:'Normal', old:'Personne âgée', preg:'Femme enceinte', confirm:'Confirmer mon ticket',
     trackTitle:'Suivi en temps réel', live:'Connecté · Mise à jour en direct', yourTk:'Votre ticket', ahead:'personnes devant vous',
-    estMin:'min estimées', prog:'Progression de la file', cur:'En cours', leave:'🚶 Partez vers', cancel:'Annuler le ticket',
+    estMin:'min estimées', prog:'Progression de la file', cur:'En cours', leave:'Partez vers', cancel:'Annuler le ticket',
     mtSub:'Vos files d\'attente actives', empty:'Aucun ticket actif', empty2:'Recherchez un établissement pour prendre un ticket.',
-    toast2:'Plus que 2 personnes !', toast2m:'Préparez-vous, votre tour approche.', toastGo:'Partez maintenant 🚶',
+    toast2:'Plus que 2 personnes !', toast2m:'Préparez-vous, votre tour approche.', toastGo:'Partez maintenant',
     toastGoM:'Il est temps de vous rendre sur place.', turnT:'C\'est votre tour !', turnM:'Présentez-vous au guichet',
     turnBtn:'Terminer', nni:'NNI', status:'Statut', client:'Client', lang:'Langue', langv:'Français', logout:'Se déconnecter', posLbl:'position',
     noacc:'Pas encore de compte ?', create:'Créer un compte', regTitle:'Inscription', regSub:'Créez votre compte en 30 secondes',
     fullname:'Nom complet', phoneHint:'Numéro de téléphone (Ex: 32XXXXXX)', passHint:'Mot de passe (min 6 car.)',
     iam:'Je suis :', manager:'Gestionnaire', regBtn:'Créer mon compte', hasacc:'Déjà un compte ?', loginLink:'Se connecter',
     otpTitle:'Vérification', otpSub:'Code envoyé par SMS', otpMsg:'Un code à 6 chiffres a été envoyé par SMS au',
-    otpBtn:'Vérifier', resend:'Renvoyer le code', resendOk:'Code renvoyé 📩', resendOkM:'Vérifiez vos SMS.',
-    welcome:'Bienvenue sur WaQti ! 🎉', welcomeM:'Votre compte a été créé avec succès.'},
-  ar:{slogan:'أدر وقتك بذكاء', btn:'تسجيل الدخول', hello:'سلام، سيدات 👋', sub:'أين تريد أخذ تذكرة؟',
+    otpBtn:'Vérifier', resend:'Renvoyer le code', resendOk:'Code renvoyé', resendOkM:'Vérifiez vos SMS.',
+    welcome:'Bienvenue sur WaQti !', welcomeM:'Votre compte a été créé avec succès.'},
+  ar:{slogan:'أدر وقتك بذكاء', btn:'تسجيل الدخول', hello:'سلام، سيدات', sub:'أين تريد أخذ تذكرة؟',
     search:'ابحث عن مؤسسة...', nearby:'بالقرب منك — نواكشوط', home:'الرئيسية', tickets:'تذاكري', profile:'حسابي',
-    all:'الكل', sante:'🏥 الصحة', banque:'🏦 البنوك', admin:'🏛️ الإدارات',
+    all:'الكل', sante:'الصحة', banque:'البنوك', admin:'الإدارات',
     open:'مفتوح · 08:00 – 16:00 · طابور مباشر', services:'الخدمات المتاحة', persons:'شخصاً في الانتظار', min:'دقيقة',
     take:'أخذ تذكرة', info:'المعلومات', etab:'المؤسسة', svc:'الخدمة', waiting:'عدد المنتظرين', est:'الوقت المقدر',
-    prio:'الأولوية', normal:'عادي', old:'شخص مسن', preg:'امرأة حامل', confirm:'🎫 تأكيد التذكرة',
+    prio:'الأولوية', normal:'عادي', old:'شخص مسن', preg:'امرأة حامل', confirm:'تأكيد التذكرة',
     trackTitle:'التتبع المباشر', live:'متصل · تحديث مباشر', yourTk:'تذكرتك', ahead:'أشخاص أمامك',
-    estMin:'دقيقة متبقية', prog:'تقدم الطابور', cur:'الحالي', leave:'🚶 انطلق حوالي', cancel:'إلغاء التذكرة',
+    estMin:'دقيقة متبقية', prog:'تقدم الطابور', cur:'الحالي', leave:'انطلق حوالي', cancel:'إلغاء التذكرة',
     mtSub:'طوابيرك النشطة', empty:'لا توجد تذكرة نشطة', empty2:'ابحث عن مؤسسة لأخذ تذكرة.',
-    toast2:'بقي شخصان فقط!', toast2m:'استعد، دورك يقترب.', toastGo:'انطلق الآن 🚶',
+    toast2:'بقي شخصان فقط!', toast2m:'استعد، دورك يقترب.', toastGo:'انطلق الآن',
     toastGoM:'حان وقت التوجه إلى المكان.', turnT:'حان دورك!', turnM:'توجه إلى الشباك',
     turnBtn:'إنهاء', nni:'الرقم الوطني', status:'الحالة', client:'زبون', lang:'اللغة', langv:'العربية', logout:'تسجيل الخروج', posLbl:'الموقع',
     noacc:'ليس لديك حساب؟', create:'إنشاء حساب', regTitle:'التسجيل', regSub:'أنشئ حسابك في 30 ثانية',
     fullname:'الاسم الكامل', phoneHint:'رقم الهاتف (مثال: 32XXXXXX)', passHint:'كلمة المرور (6 أحرف على الأقل)',
     iam:'أنا :', manager:'مسير', regBtn:'إنشاء حسابي', hasacc:'لديك حساب بالفعل؟', loginLink:'تسجيل الدخول',
     otpTitle:'التحقق', otpSub:'تم إرسال الرمز عبر SMS', otpMsg:'تم إرسال رمز من 6 أرقام عبر SMS إلى',
-    otpBtn:'تحقق', resend:'إعادة إرسال الرمز', resendOk:'تم إرسال الرمز 📩', resendOkM:'تحقق من رسائلك.',
-    welcome:'مرحباً بك في وقتي! 🎉', welcomeM:'تم إنشاء حسابك بنجاح.'}
+    otpBtn:'تحقق', resend:'إعادة إرسال الرمز', resendOk:'تم إرسال الرمز', resendOkM:'تحقق من رسائلك.',
+    welcome:'مرحباً بك في وقتي!', welcomeM:'تم إنشاء حسابك بنجاح.'}
 };
 
 let lang='fr', curEtab=null, curSvc=null, timer=null, pos=0, total=0, tkNum='', minPer=3;
@@ -512,11 +527,11 @@ function renderEtabs(filter=''){
       : e.wait<=15?`<span class="badge b-blue">~${e.wait} ${t('min')}</span>`
       : `<span class="badge b-orange">~${e.wait*3} ${t('min')}</span>`;
     return `<div class="card etab" onclick="openEtab(${e.id})">
-      <div class="ic" style="background:${e.bg}">${e.ic}</div>
+      <div class="ic" style="background:${e.bg}">${ICONS[e.ic]}</div>
       <div style="flex:1"><h3>${lang==='ar'?e.ar:e.fr}</h3>
       <div class="meta"><span class="dot pulse"></span> ${e.addr}</div></div>
       ${badge}</div>`;
-  }).join('') || `<div class="empty"><div class="e-ic">🔍</div><b>—</b></div>`;
+  }).join('') || `<div class="empty"><b>—</b></div>`;
 }
 function filterEtabs(v){renderEtabs(v);}
 
@@ -531,7 +546,7 @@ function renderSvcs(){
   $('svcList').innerHTML = curEtab.services.map((s,i)=>`
     <div class="card svc" onclick="openConfirm(${i})">
       <div><h4>${lang==='ar'?s.ar:s.fr}</h4>
-      <div class="q">👥 ${s.q} ${t('persons')} · ⏱️ ~${s.t} ${t('min')}</div></div>
+      <div class="q">${s.q} ${t('persons')} · ~${s.t} ${t('min')}</div></div>
       <div class="go">${lang==='ar'?'‹':'›'}</div>
     </div>`).join('');
 }
@@ -602,7 +617,7 @@ function renderMyTickets(){
 function resetDemo(){
   clearInterval(timer); pos=0;
   $('turn').classList.remove('show');
-  $('ticketsBody').innerHTML = `<div class="empty"><div class="e-ic">🎫</div><b>${t('empty')}</b><p style="font-size:13.5px;margin-top:6px">${t('empty2')}</p></div>`;
+  $('ticketsBody').innerHTML = `<div class="empty"><b>${t('empty')}</b><p style="font-size:13.5px;margin-top:6px">${t('empty2')}</p></div>`;
   go('s-home');
 }
 
