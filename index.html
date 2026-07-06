@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2563EB">
+<title>WaQti — Démo</title>
+<style>
+  :root{
+    --primary:#2563EB; --primary-dark:#1D4ED8; --primary-light:#EFF6FF;
+    --navy:#0B1E3A; --navy2:#122B52;
+    --accent:#3B82F6; --success:#059669; --warning:#F59E0B; --danger:#DC2626;
+    --bg:#F1F5F9; --surface:#fff; --text:#0F172A; --text2:#64748B; --border:#E2E8F0;
+    --grad:linear-gradient(135deg,#0B1E3A 0%,#12306B 55%,#2563EB 100%);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans Arabic',sans-serif;background:#0f172a;display:flex;align-items:center;justify-content:center}
+  /* Phone frame on desktop, fullscreen on mobile */
+  #phone{width:390px;height:844px;max-height:100vh;background:var(--bg);position:relative;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);border-radius:40px;border:8px solid #1e293b}
+  @media(max-width:500px){body{background:var(--bg)}#phone{width:100%;height:100%;max-height:none;border-radius:0;border:none;box-shadow:none}}
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;background:var(--bg);overflow:hidden}
+  .screen.active{display:flex;animation:slideIn .28s ease}
+  @keyframes slideIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+  @media(prefers-reduced-motion:reduce){.screen.active{animation:none}}
+  .rtl{direction:rtl}
+
+  /* Header */
+  .hdr{background:var(--grad);color:#fff;padding:52px 20px 20px;flex-shrink:0}
+  .hdr.small{padding:52px 20px 16px;display:flex;align-items:center;gap:12px}
+  .back{background:rgba(255,255,255,.2);border:none;color:#fff;width:38px;height:38px;border-radius:12px;font-size:20px;cursor:pointer;flex-shrink:0}
+  .hdr h1{font-size:19px;font-weight:600}
+  .hdr .sub{font-size:13px;opacity:.85;margin-top:2px}
+
+  .body{flex:1;overflow-y:auto;padding:16px 16px 90px;-webkit-overflow-scrolling:touch}
+
+  /* Bottom nav */
+  .nav{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);display:flex;padding:10px 0 22px;z-index:5}
+  .nav button{flex:1;background:none;border:none;color:var(--text2);font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:inherit}
+  .nav button.on{color:var(--primary);font-weight:600}
+  .nav svg{width:24px;height:24px}
+
+  /* Cards */
+  .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;transition:transform .12s}
+  .card:active{transform:scale(.98)}
+  .etab{display:flex;gap:14px;align-items:center}
+  .etab .ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+  .etab h3{font-size:15px;font-weight:600}
+  .etab .meta{font-size:12.5px;color:var(--text2);margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--success);display:inline-block}
+  .dot.pulse{animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
+  .b-green{background:#ECFDF5;color:var(--success)}
+  .b-orange{background:#FFFBEB;color:var(--warning)}
+  .b-blue{background:var(--primary-light);color:var(--primary)}
+
+  .search{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 16px;width:100%;font-size:15px;font-family:inherit;color:var(--text);outline:none;margin-bottom:14px}
+  .search:focus{border-color:var(--primary)}
+  .sect{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin:6px 0 10px}
+
+  /* Chips */
+  .chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px}
+  .chip{background:#fff;border:1px solid var(--border);border-radius:20px;padding:8px 16px;font-size:13px;color:var(--text2);white-space:nowrap;cursor:pointer;font-family:inherit}
+  .chip.on{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:600}
+
+  /* Buttons */
+  .btn{background:var(--primary);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:600;width:100%;cursor:pointer;font-family:inherit;transition:transform .12s}
+  .btn:active{transform:scale(.97)}
+  .btn.ghost{background:#fff;color:var(--danger);border:1.5px solid var(--border)}
+  .btn.grad{background:var(--grad)}
+
+  /* Service rows */
+  .svc{display:flex;justify-content:space-between;align-items:center}
+  .svc h4{font-size:15px;font-weight:600}
+  .svc .q{font-size:12.5px;color:var(--text2);margin-top:3px}
+  .svc .go{color:var(--primary);font-size:20px}
+
+  /* Ticket screen */
+  .ticket-wrap{padding:20px 16px 90px;flex:1;overflow-y:auto}
+  .big-ticket{background:var(--grad);border-radius:24px;padding:28px 24px;color:#fff;text-align:center;position:relative;overflow:hidden;margin-bottom:16px}
+  .big-ticket::before,.big-ticket::after{content:'';position:absolute;width:36px;height:36px;background:var(--bg);border-radius:50%;top:50%;transform:translateY(-50%)}
+  .big-ticket::before{left:-18px}.big-ticket::after{right:-18px}
+  .tk-lbl{font-size:13px;opacity:.85;letter-spacing:1px;text-transform:uppercase}
+  .tk-num{font-size:56px;font-weight:800;letter-spacing:2px;margin:6px 0}
+  .tk-etab{font-size:14px;opacity:.9}
+  .stats{display:flex;gap:12px;margin-bottom:16px}
+  .stat{flex:1;background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 12px;text-align:center}
+  .stat .v{font-size:34px;font-weight:800;color:var(--primary)}
+  .stat .v.warn{color:var(--warning)}
+  .stat .l{font-size:12px;color:var(--text2);margin-top:4px}
+  .progress-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:16px}
+  .pbar{height:10px;background:var(--primary-light);border-radius:10px;overflow:hidden;margin-top:12px}
+  .pbar div{height:100%;background:var(--grad);border-radius:10px;transition:width 1s ease}
+  .plabel{display:flex;justify-content:space-between;font-size:12.5px;color:var(--text2);margin-top:8px}
+
+  /* Notification toast */
+  .toast{position:absolute;top:56px;left:14px;right:14px;background:#fff;border-radius:16px;padding:14px 16px;display:none;align-items:center;gap:12px;box-shadow:0 12px 40px rgba(15,23,42,.25);z-index:50;border-left:4px solid var(--primary)}
+  .toast.show{display:flex;animation:drop .4s ease}
+  @keyframes drop{from{transform:translateY(-80px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .toast .ti{width:42px;height:42px;border-radius:12px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .toast b{font-size:14px;display:block}
+  .toast span{font-size:12.5px;color:var(--text2)}
+
+  /* Turn screen */
+  .turn{position:absolute;inset:0;background:var(--grad);z-index:60;display:none;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:30px}
+  .turn.show{display:flex;animation:fadeUp .5s ease}
+  @keyframes fadeUp{from{opacity:0}to{opacity:1}}
+  .turn .big{font-size:80px;animation:bounce 1s infinite alternate}
+  @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+  .turn h2{font-size:30px;margin:14px 0 8px}
+  .turn p{opacity:.9;font-size:16px;margin-bottom:30px}
+  .turn .num{font-size:48px;font-weight:800;background:rgba(255,255,255,.18);padding:8px 30px;border-radius:20px;margin-bottom:30px}
+  .turn button{background:#fff;color:var(--primary);border:none;border-radius:14px;padding:15px 40px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+
+  /* Login */
+  .login-hero{background:var(--grad);padding:80px 24px 40px;color:#fff;text-align:center;border-radius:0 0 36px 36px}
+  .logo{width:84px;height:84px;background:rgba(255,255,255,.16);border-radius:26px;display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 16px;backdrop-filter:blur(4px)}
+  /* WaQti wordmark: clock inside the Q, like the banner */
+  .wordmark{font-size:44px;font-weight:800;letter-spacing:.5px;display:inline-flex;align-items:baseline}
+  .qclock{display:inline-block;width:.72em;height:.72em;border:.085em solid currentColor;border-radius:50%;position:relative;margin:0 .02em;transform:translateY(.08em)}
+  .qclock::before{content:'';position:absolute;left:50%;top:50%;width:.06em;height:.26em;background:currentColor;transform-origin:top center;transform:translate(-50%,0) rotate(315deg);border-radius:1em}
+  .qclock::after{content:'';position:absolute;left:50%;top:50%;width:.06em;height:.18em;background:currentColor;transform-origin:top center;transform:translate(-50%,0) rotate(90deg);border-radius:1em}
+  .qtail{display:inline-block;width:.14em;height:.14em;background:currentColor;border-radius:.03em;transform:rotate(45deg) translate(-.28em,.38em);margin-left:-.12em;margin-right:.06em}
+  .by-connectsoft{font-size:11.5px;letter-spacing:2.5px;text-transform:uppercase;opacity:.75;margin-top:14px;font-weight:600}
+  .login-hero h1{font-size:34px;font-weight:800;letter-spacing:1px}
+  .login-hero p{opacity:.9;margin-top:6px;font-size:15px}
+  .login-form{padding:28px 22px}
+  .field{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;font-size:15px;width:100%;margin-bottom:12px;font-family:inherit;color:var(--text)}
+  .lang-row{display:flex;gap:10px;justify-content:center;margin-top:18px}
+  .lang-row button{background:none;border:1.5px solid var(--border);border-radius:20px;padding:7px 18px;font-size:13px;cursor:pointer;color:var(--text2);font-family:inherit}
+  .lang-row button.on{border-color:var(--primary);color:var(--primary);font-weight:700;background:var(--primary-light)}
+
+  .empty{text-align:center;color:var(--text2);padding:60px 20px}
+  .empty .e-ic{font-size:52px;margin-bottom:12px}
+  .info-strip{background:var(--primary-light);border-radius:14px;padding:13px 15px;font-size:13px;color:var(--primary-dark);margin-bottom:14px;display:flex;gap:10px;align-items:center}
+  .prio{display:flex;gap:8px;margin:12px 0 16px}
+  .prio button{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:11px 6px;font-size:12px;cursor:pointer;color:var(--text2);font-family:inherit}
+  .prio button.on{border-color:var(--primary);color:var(--primary);background:var(--primary-light);font-weight:700}
+  .profile-row{display:flex;justify-content:space-between;padding:15px 2px;border-bottom:1px solid var(--border);font-size:14.5px}
+  .profile-row span:first-child{color:var(--text2)}
+  .profile-row b{font-weight:600}
+  .link-row{text-align:center;margin-top:16px;font-size:14px;color:var(--text2)}
+  .link-row a{color:var(--primary);font-weight:700;cursor:pointer;text-decoration:none}
+  .otp-row{display:flex;gap:10px;justify-content:center;margin:24px 0;direction:ltr}
+  .otp-box{width:48px;height:56px;border:1.5px solid var(--border);border-radius:12px;text-align:center;font-size:24px;font-weight:700;color:var(--text);background:#fff;outline:none;font-family:inherit}
+  .otp-box:focus{border-color:var(--primary);border-width:2px}
+  .role-row{display:flex;gap:10px;margin-bottom:12px}
+  .role-row button{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px 8px;font-size:14px;cursor:pointer;color:var(--text2);font-family:inherit}
+  .role-row button.on{border-color:var(--primary);color:var(--primary);background:var(--primary-light);font-weight:700}
+</style>
+</head>
+<body>
+<div id="phone">
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <div class="ti">🔔</div>
+    <div><b id="toastTitle"></b><span id="toastMsg"></span></div>
+  </div>
+
+  <!-- YOUR TURN OVERLAY -->
+  <div class="turn" id="turn">
+    <div class="big">🎉</div>
+    <h2 id="turnTitle"></h2>
+    <p id="turnMsg"></p>
+    <div class="num" id="turnNum"></div>
+    <button onclick="resetDemo()" id="turnBtn"></button>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="screen active" id="s-login">
+    <div style="flex:1;overflow-y:auto">
+      <div class="login-hero">
+        <div class="logo">⏱️</div>
+        <h1 id="l-appname"><span class="wordmark">Wa<span class="qclock"></span><span class="qtail"></span>ti</span></h1>
+        <p id="l-slogan">Gérez votre temps intelligemment</p>
+        <div class="by-connectsoft">ConnectSoft — Mauritanian Startup</div>
+      </div>
+      <div class="login-form">
+        <input class="field" id="l-phone" value="+222 32 34 56 78">
+        <input class="field" type="password" value="••••••••">
+        <button class="btn grad" onclick="go('s-home')" id="l-btn">Se connecter</button>
+        <div class="link-row"><span id="l-noacc">Pas encore de compte ?</span> <a onclick="go('s-register')" id="l-create">Créer un compte</a></div>
+        <div class="lang-row">
+          <button id="btn-fr" class="on" onclick="setLang('fr')">Français</button>
+          <button id="btn-ar" onclick="setLang('ar')">العربية</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="screen" id="s-register">
+    <div class="hdr small">
+      <button class="back" onclick="go('s-login')">‹</button>
+      <div><h1 id="r-title">Inscription</h1><div class="sub" id="r-sub">Créez votre compte en 30 secondes</div></div>
+    </div>
+    <div class="body" style="padding-bottom:20px">
+      <input class="field" id="r-name" placeholder="Nom complet">
+      <input class="field" id="r-phone" placeholder="Numéro de téléphone (Ex: 32XXXXXX)" inputmode="tel">
+      <input class="field" id="r-pass" type="password" placeholder="Mot de passe (min 6 car.)">
+      <div class="sect" id="r-iam">Je suis :</div>
+      <div class="role-row">
+        <button class="on" onclick="setRole(this)">👤 <span id="r-client">Client</span></button>
+        <button onclick="setRole(this)">🏢 <span id="r-manager">Gestionnaire</span></button>
+      </div>
+      <button class="btn grad" onclick="doRegister()" id="r-btn">Créer mon compte</button>
+      <div class="link-row"><span id="r-hasacc">Déjà un compte ?</span> <a onclick="go('s-login')" id="r-login">Se connecter</a></div>
+    </div>
+  </div>
+
+  <!-- OTP -->
+  <div class="screen" id="s-otp">
+    <div class="hdr small">
+      <button class="back" onclick="go('s-register')">‹</button>
+      <div><h1 id="o-title">Vérification</h1><div class="sub" id="o-sub">Code envoyé par SMS</div></div>
+    </div>
+    <div class="body" style="text-align:center;padding-top:30px">
+      <div style="font-size:48px;margin-bottom:8px">💬</div>
+      <p style="font-size:14.5px;color:var(--text2);padding:0 20px" id="o-msg">Un code à 6 chiffres a été envoyé par SMS au <b id="o-phone">+222 32 34 56 78</b></p>
+      <div class="otp-row">
+        <input class="otp-box" maxlength="1" inputmode="numeric" oninput="otpNext(this,0)">
+        <input class="otp-box" maxlength="1" inputmode="numeric" oninput="otpNext(this,1)">
+        <input class="otp-box" maxlength="1" inputmode="numeric" oninput="otpNext(this,2)">
+        <input class="otp-box" maxlength="1" inputmode="numeric" oninput="otpNext(this,3)">
+        <input class="otp-box" maxlength="1" inputmode="numeric" oninput="otpNext(this,4)">
+        <input class="otp-box" maxlength="1" inputmode="numeric" oninput="otpNext(this,5)">
+      </div>
+      <button class="btn grad" onclick="verifyOtp()" id="o-btn">Vérifier</button>
+      <div class="link-row"><a onclick="fakeResend()" id="o-resend">Renvoyer le code</a></div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen" id="s-home">
+    <div class="hdr">
+      <h1 id="h-hello">Salam, Sidatt 👋</h1>
+      <div class="sub" id="h-sub">Où voulez-vous prendre un ticket ?</div>
+    </div>
+    <div class="body">
+      <input class="search" id="h-search" placeholder="Rechercher un établissement..." oninput="filterEtabs(this.value)">
+      <div class="chips" id="chips"></div>
+      <div class="sect" id="h-nearby">À proximité — Nouakchott</div>
+      <div id="etabList"></div>
+    </div>
+    <div class="nav">
+      <button class="on" id="n-home"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span id="nt-home">Accueil</span></button>
+      <button onclick="go('s-tickets')" id="n-tickets"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4a2 2 0 0 1 0 4v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 1 0-4z"/></svg><span id="nt-tickets">Mes tickets</span></button>
+      <button onclick="go('s-profile')" id="n-profile"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/></svg><span id="nt-profile">Profil</span></button>
+    </div>
+  </div>
+
+  <!-- ETAB DETAIL -->
+  <div class="screen" id="s-etab">
+    <div class="hdr small">
+      <button class="back" onclick="go('s-home')">‹</button>
+      <div><h1 id="e-name"></h1><div class="sub" id="e-addr"></div></div>
+    </div>
+    <div class="body">
+      <div class="info-strip">📍 <span id="e-open">Ouvert · 08h00 – 16h00 · File en temps réel</span></div>
+      <div class="sect" id="e-services">Services disponibles</div>
+      <div id="svcList"></div>
+    </div>
+  </div>
+
+  <!-- CONFIRM TICKET -->
+  <div class="screen" id="s-confirm">
+    <div class="hdr small">
+      <button class="back" onclick="go('s-etab')">‹</button>
+      <div><h1 id="c-title">Prendre un ticket</h1><div class="sub" id="c-svc"></div></div>
+    </div>
+    <div class="body">
+      <div class="card" style="cursor:default">
+        <div class="sect" style="margin-top:0" id="c-info">Informations</div>
+        <div class="profile-row"><span id="c-l1">Établissement</span><b id="c-v1"></b></div>
+        <div class="profile-row"><span id="c-l2">Service</span><b id="c-v2"></b></div>
+        <div class="profile-row"><span id="c-l3">Personnes en attente</span><b id="c-v3"></b></div>
+        <div class="profile-row" style="border:none"><span id="c-l4">Temps estimé</span><b id="c-v4" style="color:var(--warning)"></b></div>
+      </div>
+      <div class="sect" id="c-prio-t">Priorité</div>
+      <div class="prio">
+        <button class="on" id="p1" onclick="setPrio(this)">👤 <span id="pt1">Normal</span></button>
+        <button id="p2" onclick="setPrio(this)">👵 <span id="pt2">Personne âgée</span></button>
+        <button id="p3" onclick="setPrio(this)">🤰 <span id="pt3">Femme enceinte</span></button>
+      </div>
+      <button class="btn grad" onclick="takeTicket()" id="c-btn">🎫 Confirmer mon ticket</button>
+    </div>
+  </div>
+
+  <!-- TRACKING -->
+  <div class="screen" id="s-track">
+    <div class="hdr small">
+      <button class="back" onclick="go('s-home')">‹</button>
+      <div><h1 id="t-title">Suivi en temps réel</h1><div class="sub"><span class="dot pulse"></span> <span id="t-live">Connecté · Mise à jour en direct</span></div></div>
+    </div>
+    <div class="ticket-wrap">
+      <div class="big-ticket">
+        <div class="tk-lbl" id="t-lbl">Votre ticket</div>
+        <div class="tk-num" id="t-num">A-047</div>
+        <div class="tk-etab" id="t-etab"></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="v" id="t-pos">7</div><div class="l" id="t-posl">personnes devant vous</div></div>
+        <div class="stat"><div class="v warn" id="t-time">21</div><div class="l" id="t-timel">min estimées</div></div>
+      </div>
+      <div class="progress-card">
+        <b style="font-size:14px" id="t-prog">Progression de la file</b>
+        <div class="pbar"><div id="t-bar" style="width:12%"></div></div>
+        <div class="plabel"><span id="t-cur">En cours : <b>A-040</b></span><span id="t-leave">🚶 Partez vers 17h05</span></div>
+      </div>
+      <button class="btn ghost" onclick="resetDemo()" id="t-cancel">Annuler le ticket</button>
+    </div>
+  </div>
+
+  <!-- MY TICKETS -->
+  <div class="screen" id="s-tickets">
+    <div class="hdr"><h1 id="mt-title">Mes tickets</h1><div class="sub" id="mt-sub">Vos files d'attente actives</div></div>
+    <div class="body" id="ticketsBody">
+      <div class="empty"><div class="e-ic">🎫</div><b id="mt-empty">Aucun ticket actif</b><p style="font-size:13.5px;margin-top:6px" id="mt-empty2">Recherchez un établissement pour prendre un ticket.</p></div>
+    </div>
+    <div class="nav">
+      <button onclick="go('s-home')"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span id="nt-home2">Accueil</span></button>
+      <button class="on"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4a2 2 0 0 1 0 4v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 1 0-4z"/></svg><span id="nt-tickets2">Mes tickets</span></button>
+      <button onclick="go('s-profile')"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/></svg><span id="nt-profile2">Profil</span></button>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="screen" id="s-profile">
+    <div class="hdr" style="text-align:center">
+      <div class="logo" style="width:70px;height:70px;font-size:32px;margin-bottom:10px">👤</div>
+      <h1>Sidatt Belkheir</h1><div class="sub">+222 32 34 56 78</div>
+    </div>
+    <div class="body">
+      <div class="card" style="cursor:default">
+        <div class="profile-row"><span id="pr-nni">NNI</span><b>1234567890</b></div>
+        <div class="profile-row"><span id="pr-status">Statut</span><b id="pr-statusv">Client</b></div>
+        <div class="profile-row" style="border:none"><span id="pr-lang">Langue</span><b id="pr-langv">Français</b></div>
+      </div>
+      <button class="btn ghost" onclick="go('s-login')" id="pr-logout">Se déconnecter</button>
+    </div>
+    <div class="nav">
+      <button onclick="go('s-home')"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span id="nt-home3">Accueil</span></button>
+      <button onclick="go('s-tickets')"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4a2 2 0 0 1 0 4v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 1 0-4z"/></svg><span id="nt-tickets3">Mes tickets</span></button>
+      <button class="on"><svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/></svg><span id="nt-profile3">Profil</span></button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============ DATA ============ */
+const ETABS = [
+  {id:1, cat:'sante', ic:'🏥', bg:'#EFF6FF', fr:'Hôpital Cheikh Zayed', ar:'مستشفى الشيخ زايد', addr:'Tevragh Zeina, Nouakchott', wait:12, services:[
+    {fr:'Médecine générale', ar:'الطب العام', q:12, t:35},
+    {fr:'Cardiologie', ar:'أمراض القلب', q:7, t:21},
+    {fr:'Pédiatrie', ar:'طب الأطفال', q:9, t:27},
+    {fr:'Laboratoire d\'analyses', ar:'مختبر التحاليل', q:5, t:15}]},
+  {id:2, cat:'sante', ic:'🏥', bg:'#EFF6FF', fr:'Centre Hospitalier National', ar:'المستشفى الوطني', addr:'Ksar, Nouakchott', wait:18, services:[
+    {fr:'Urgences consultations', ar:'استشارات الاستعجالات', q:18, t:50},
+    {fr:'Radiologie', ar:'الأشعة', q:6, t:18},
+    {fr:'Gynécologie', ar:'أمراض النساء', q:10, t:30}]},
+  {id:3, cat:'sante', ic:'⚕️', bg:'#ECFDF5', fr:'Centre de Santé Sebkha', ar:'مركز صحة السبخة', addr:'Sebkha, Nouakchott', wait:8, services:[
+    {fr:'Consultation générale', ar:'استشارة عامة', q:8, t:24},
+    {fr:'Vaccination', ar:'التلقيح', q:4, t:12}]},
+  {id:4, cat:'banque', ic:'🏦', bg:'#FFFBEB', fr:'Banque BMCI — Agence Centrale', ar:'بنك BMCI — الوكالة المركزية', addr:'Av. Gamal Abdel Nasser', wait:9, services:[
+    {fr:'Guichet retrait / dépôt', ar:'شباك السحب والإيداع', q:9, t:22},
+    {fr:'Ouverture de compte', ar:'فتح حساب', q:4, t:16},
+    {fr:'Service crédit', ar:'خدمة القروض', q:3, t:15}]},
+  {id:5, cat:'admin', ic:'🏛️', bg:'#F5F3FF', fr:'ANRPTS — État Civil', ar:'الوكالة الوطنية — الحالة المدنية', addr:'Ilot K, Nouakchott', wait:22, services:[
+    {fr:'Carte d\'identité nationale', ar:'بطاقة التعريف الوطنية', q:22, t:60},
+    {fr:'Passeport', ar:'جواز السفر', q:14, t:42},
+    {fr:'Acte de naissance', ar:'شهادة الميلاد', q:11, t:30}]},
+  {id:6, cat:'admin', ic:'🏛️', bg:'#F5F3FF', fr:'Commune de Tevragh Zeina', ar:'بلدية تفرغ زينة', addr:'Tevragh Zeina', wait:6, services:[
+    {fr:'Légalisation de documents', ar:'تصديق الوثائق', q:6, t:14},
+    {fr:'Certificat de résidence', ar:'شهادة الإقامة', q:5, t:12}]},
+];
+
+const STR = {
+  fr:{slogan:'Gérez votre temps intelligemment', btn:'Se connecter', hello:'Salam, Sidatt 👋', sub:'Où voulez-vous prendre un ticket ?',
+    search:'Rechercher un établissement...', nearby:'À proximité — Nouakchott', home:'Accueil', tickets:'Mes tickets', profile:'Profil',
+    all:'Tous', sante:'🏥 Santé', banque:'🏦 Banques', admin:'🏛️ Administrations',
+    open:'Ouvert · 08h00 – 16h00 · File en temps réel', services:'Services disponibles', persons:'personnes en attente', min:'min',
+    take:'Prendre un ticket', info:'Informations', etab:'Établissement', svc:'Service', waiting:'Personnes en attente', est:'Temps estimé',
+    prio:'Priorité', normal:'Normal', old:'Personne âgée', preg:'Femme enceinte', confirm:'🎫 Confirmer mon ticket',
+    trackTitle:'Suivi en temps réel', live:'Connecté · Mise à jour en direct', yourTk:'Votre ticket', ahead:'personnes devant vous',
+    estMin:'min estimées', prog:'Progression de la file', cur:'En cours', leave:'🚶 Partez vers', cancel:'Annuler le ticket',
+    mtSub:'Vos files d\'attente actives', empty:'Aucun ticket actif', empty2:'Recherchez un établissement pour prendre un ticket.',
+    toast2:'Plus que 2 personnes !', toast2m:'Préparez-vous, votre tour approche.', toastGo:'Partez maintenant 🚶',
+    toastGoM:'Il est temps de vous rendre sur place.', turnT:'C\'est votre tour !', turnM:'Présentez-vous au guichet',
+    turnBtn:'Terminer', nni:'NNI', status:'Statut', client:'Client', lang:'Langue', langv:'Français', logout:'Se déconnecter', posLbl:'position',
+    noacc:'Pas encore de compte ?', create:'Créer un compte', regTitle:'Inscription', regSub:'Créez votre compte en 30 secondes',
+    fullname:'Nom complet', phoneHint:'Numéro de téléphone (Ex: 32XXXXXX)', passHint:'Mot de passe (min 6 car.)',
+    iam:'Je suis :', manager:'Gestionnaire', regBtn:'Créer mon compte', hasacc:'Déjà un compte ?', loginLink:'Se connecter',
+    otpTitle:'Vérification', otpSub:'Code envoyé par SMS', otpMsg:'Un code à 6 chiffres a été envoyé par SMS au',
+    otpBtn:'Vérifier', resend:'Renvoyer le code', resendOk:'Code renvoyé 📩', resendOkM:'Vérifiez vos SMS.',
+    welcome:'Bienvenue sur WaQti ! 🎉', welcomeM:'Votre compte a été créé avec succès.'},
+  ar:{slogan:'أدر وقتك بذكاء', btn:'تسجيل الدخول', hello:'سلام، سيدات 👋', sub:'أين تريد أخذ تذكرة؟',
+    search:'ابحث عن مؤسسة...', nearby:'بالقرب منك — نواكشوط', home:'الرئيسية', tickets:'تذاكري', profile:'حسابي',
+    all:'الكل', sante:'🏥 الصحة', banque:'🏦 البنوك', admin:'🏛️ الإدارات',
+    open:'مفتوح · 08:00 – 16:00 · طابور مباشر', services:'الخدمات المتاحة', persons:'شخصاً في الانتظار', min:'دقيقة',
+    take:'أخذ تذكرة', info:'المعلومات', etab:'المؤسسة', svc:'الخدمة', waiting:'عدد المنتظرين', est:'الوقت المقدر',
+    prio:'الأولوية', normal:'عادي', old:'شخص مسن', preg:'امرأة حامل', confirm:'🎫 تأكيد التذكرة',
+    trackTitle:'التتبع المباشر', live:'متصل · تحديث مباشر', yourTk:'تذكرتك', ahead:'أشخاص أمامك',
+    estMin:'دقيقة متبقية', prog:'تقدم الطابور', cur:'الحالي', leave:'🚶 انطلق حوالي', cancel:'إلغاء التذكرة',
+    mtSub:'طوابيرك النشطة', empty:'لا توجد تذكرة نشطة', empty2:'ابحث عن مؤسسة لأخذ تذكرة.',
+    toast2:'بقي شخصان فقط!', toast2m:'استعد، دورك يقترب.', toastGo:'انطلق الآن 🚶',
+    toastGoM:'حان وقت التوجه إلى المكان.', turnT:'حان دورك!', turnM:'توجه إلى الشباك',
+    turnBtn:'إنهاء', nni:'الرقم الوطني', status:'الحالة', client:'زبون', lang:'اللغة', langv:'العربية', logout:'تسجيل الخروج', posLbl:'الموقع',
+    noacc:'ليس لديك حساب؟', create:'إنشاء حساب', regTitle:'التسجيل', regSub:'أنشئ حسابك في 30 ثانية',
+    fullname:'الاسم الكامل', phoneHint:'رقم الهاتف (مثال: 32XXXXXX)', passHint:'كلمة المرور (6 أحرف على الأقل)',
+    iam:'أنا :', manager:'مسير', regBtn:'إنشاء حسابي', hasacc:'لديك حساب بالفعل؟', loginLink:'تسجيل الدخول',
+    otpTitle:'التحقق', otpSub:'تم إرسال الرمز عبر SMS', otpMsg:'تم إرسال رمز من 6 أرقام عبر SMS إلى',
+    otpBtn:'تحقق', resend:'إعادة إرسال الرمز', resendOk:'تم إرسال الرمز 📩', resendOkM:'تحقق من رسائلك.',
+    welcome:'مرحباً بك في وقتي! 🎉', welcomeM:'تم إنشاء حسابك بنجاح.'}
+};
+
+let lang='fr', curEtab=null, curSvc=null, timer=null, pos=0, total=0, tkNum='', minPer=3;
+
+const $ = id => document.getElementById(id);
+const t = k => STR[lang][k];
+
+/* ============ NAVIGATION ============ */
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+
+/* ============ LANGUAGE ============ */
+function setLang(l){
+  lang=l;
+  $('phone').classList.toggle('rtl', l==='ar');
+  document.documentElement.lang = l;
+  $('btn-fr').classList.toggle('on', l==='fr');
+  $('btn-ar').classList.toggle('on', l==='ar');
+  if(l==='ar'){ $('l-appname').innerHTML='<span class="wordmark">وقتي</span>'; }
+  else { $('l-appname').innerHTML='<span class="wordmark">Wa<span class="qclock"></span><span class="qtail"></span>ti</span>'; }
+  $('l-slogan').textContent=t('slogan'); $('l-btn').textContent=t('btn');
+  $('h-hello').textContent=t('hello'); $('h-sub').textContent=t('sub');
+  $('h-search').placeholder=t('search'); $('h-nearby').textContent=t('nearby');
+  ['','2','3'].forEach(s=>{
+    if($('nt-home'+s)) $('nt-home'+s).textContent=t('home');
+    if($('nt-tickets'+s)) $('nt-tickets'+s).textContent=t('tickets');
+    if($('nt-profile'+s)) $('nt-profile'+s).textContent=t('profile');
+  });
+  $('e-open').textContent=t('open'); $('e-services').textContent=t('services');
+  $('c-title').textContent=t('take'); $('c-info').textContent=t('info');
+  $('c-l1').textContent=t('etab'); $('c-l2').textContent=t('svc'); $('c-l3').textContent=t('waiting'); $('c-l4').textContent=t('est');
+  $('c-prio-t').textContent=t('prio'); $('pt1').textContent=t('normal'); $('pt2').textContent=t('old'); $('pt3').textContent=t('preg');
+  $('c-btn').textContent=t('confirm');
+  $('t-title').textContent=t('trackTitle'); $('t-live').textContent=t('live'); $('t-lbl').textContent=t('yourTk');
+  $('t-posl').textContent=t('ahead'); $('t-timel').textContent=t('estMin'); $('t-prog').textContent=t('prog'); $('t-cancel').textContent=t('cancel');
+  $('mt-title').textContent=t('tickets'); $('mt-sub').textContent=t('mtSub');
+  $('mt-empty').textContent=t('empty'); $('mt-empty2').textContent=t('empty2');
+  $('turnTitle').textContent=t('turnT'); $('turnMsg').textContent=t('turnM'); $('turnBtn').textContent=t('turnBtn');
+  $('pr-nni').textContent=t('nni'); $('pr-status').textContent=t('status'); $('pr-statusv').textContent=t('client');
+  $('pr-lang').textContent=t('lang'); $('pr-langv').textContent=t('langv'); $('pr-logout').textContent=t('logout');
+  $('l-noacc').textContent=t('noacc'); $('l-create').textContent=t('create');
+  $('r-title').textContent=t('regTitle'); $('r-sub').textContent=t('regSub');
+  $('r-name').placeholder=t('fullname'); $('r-phone').placeholder=t('phoneHint'); $('r-pass').placeholder=t('passHint');
+  $('r-iam').textContent=t('iam'); $('r-client').textContent=t('client'); $('r-manager').textContent=t('manager');
+  $('r-btn').textContent=t('regBtn'); $('r-hasacc').textContent=t('hasacc'); $('r-login').textContent=t('loginLink');
+  $('o-title').textContent=t('otpTitle'); $('o-sub').textContent=t('otpSub');
+  $('o-msg').innerHTML=t('otpMsg')+' <b id="o-phone">'+($('r-phone').value?'+222 '+$('r-phone').value:'+222 32 34 56 78')+'</b>';
+  $('o-btn').textContent=t('otpBtn'); $('o-resend').textContent=t('resend');
+  renderChips(); renderEtabs();
+  if(curEtab) renderSvcs();
+}
+
+/* ============ REGISTER + OTP ============ */
+function setRole(btn){
+  document.querySelectorAll('.role-row button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function doRegister(){
+  const ph = $('r-phone').value.trim() || '32 34 56 78';
+  $('o-msg').innerHTML = t('otpMsg')+' <b>+222 '+ph+'</b>';
+  document.querySelectorAll('.otp-box').forEach(b=>b.value='');
+  go('s-otp');
+  // Simulate SMS arriving: auto-fill the code after 2.5s — great demo effect
+  setTimeout(()=>{
+    const code='482915';
+    document.querySelectorAll('.otp-box').forEach((b,i)=>{
+      setTimeout(()=>{ b.value=code[i]; }, i*140);
+    });
+    vibe();
+  }, 2500);
+}
+function otpNext(el,i){
+  el.value = el.value.replace(/[^0-9]/g,'');
+  if(el.value && i<5) el.parentElement.children[i+1].focus();
+}
+function verifyOtp(){
+  go('s-home');
+  setTimeout(()=>showToast(t('welcome'), t('welcomeM')), 500);
+}
+function fakeResend(){ showToast(t('resendOk'), t('resendOkM')); }
+
+/* ============ HOME ============ */
+let curCat='all';
+function renderChips(){
+  const cats=[['all',t('all')],['sante',t('sante')],['banque',t('banque')],['admin',t('admin')]];
+  $('chips').innerHTML = cats.map(([c,l])=>`<button class="chip ${c===curCat?'on':''}" onclick="setCat('${c}')">${l}</button>`).join('');
+}
+function setCat(c){curCat=c;renderChips();renderEtabs();}
+function renderEtabs(filter=''){
+  const f=filter.toLowerCase();
+  const list = ETABS.filter(e=>(curCat==='all'||e.cat===curCat) && (e.fr.toLowerCase().includes(f)||e.ar.includes(filter)));
+  $('etabList').innerHTML = list.map(e=>{
+    const badge = e.wait<=8?`<span class="badge b-green">~${e.wait} ${t('min')}</span>`
+      : e.wait<=15?`<span class="badge b-blue">~${e.wait} ${t('min')}</span>`
+      : `<span class="badge b-orange">~${e.wait*3} ${t('min')}</span>`;
+    return `<div class="card etab" onclick="openEtab(${e.id})">
+      <div class="ic" style="background:${e.bg}">${e.ic}</div>
+      <div style="flex:1"><h3>${lang==='ar'?e.ar:e.fr}</h3>
+      <div class="meta"><span class="dot pulse"></span> ${e.addr}</div></div>
+      ${badge}</div>`;
+  }).join('') || `<div class="empty"><div class="e-ic">🔍</div><b>—</b></div>`;
+}
+function filterEtabs(v){renderEtabs(v);}
+
+/* ============ ETAB / SERVICES ============ */
+function openEtab(id){
+  curEtab = ETABS.find(e=>e.id===id);
+  $('e-name').textContent = lang==='ar'?curEtab.ar:curEtab.fr;
+  $('e-addr').textContent = curEtab.addr;
+  renderSvcs(); go('s-etab');
+}
+function renderSvcs(){
+  $('svcList').innerHTML = curEtab.services.map((s,i)=>`
+    <div class="card svc" onclick="openConfirm(${i})">
+      <div><h4>${lang==='ar'?s.ar:s.fr}</h4>
+      <div class="q">👥 ${s.q} ${t('persons')} · ⏱️ ~${s.t} ${t('min')}</div></div>
+      <div class="go">${lang==='ar'?'‹':'›'}</div>
+    </div>`).join('');
+}
+function openConfirm(i){
+  curSvc = curEtab.services[i];
+  $('c-svc').textContent = lang==='ar'?curSvc.ar:curSvc.fr;
+  $('c-v1').textContent = lang==='ar'?curEtab.ar:curEtab.fr;
+  $('c-v2').textContent = lang==='ar'?curSvc.ar:curSvc.fr;
+  $('c-v3').textContent = curSvc.q;
+  $('c-v4').textContent = `~${curSvc.t} ${t('min')}`;
+  go('s-confirm');
+}
+function setPrio(btn){
+  document.querySelectorAll('.prio button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+/* ============ TICKET + SIMULATED REALTIME ============ */
+function takeTicket(){
+  total = curSvc.q; pos = total;
+  minPer = Math.max(2, Math.round(curSvc.t/curSvc.q));
+  tkNum = 'A-' + String(40+total+Math.floor(Math.random()*5)).padStart(3,'0');
+  $('t-num').textContent = tkNum;
+  $('t-etab').textContent = (lang==='ar'?curEtab.ar:curEtab.fr);
+  updateTrack();
+  renderMyTickets();
+  go('s-track');
+  clearInterval(timer);
+  // Queue advances every 6 seconds — perfect pace for a live demo
+  timer = setInterval(()=>{
+    if(pos>0){ pos--; updateTrack(); checkNotifs(); }
+    else { clearInterval(timer); }
+  }, 6000);
+}
+function updateTrack(){
+  $('t-pos').textContent = pos;
+  $('t-time').textContent = pos*minPer;
+  const pct = total? Math.round((total-pos)/total*100) : 100;
+  $('t-bar').style.width = Math.max(6,pct)+'%';
+  const curNum = 'A-' + String(parseInt(tkNum.slice(2)) - pos).padStart(3,'0');
+  $('t-cur').innerHTML = `${t('cur')} : <b>${curNum}</b>`;
+  const d = new Date(Date.now() + Math.max(0,(pos*minPer-10))*60000);
+  $('t-leave').textContent = `${t('leave')} ${String(d.getHours()).padStart(2,'0')}h${String(d.getMinutes()).padStart(2,'0')}`;
+}
+function checkNotifs(){
+  if(pos===Math.min(4,total-1) && pos>2) showToast(t('toastGo'), t('toastGoM'));
+  if(pos===2) showToast(t('toast2'), t('toast2m'));
+  if(pos===0){
+    setTimeout(()=>{ $('turnNum').textContent=tkNum; $('turn').classList.add('show'); vibe(); },800);
+  }
+}
+function showToast(title,msg){
+  $('toastTitle').textContent=title; $('toastMsg').textContent=msg;
+  $('toast').classList.add('show'); vibe();
+  setTimeout(()=>$('toast').classList.remove('show'), 4200);
+}
+function vibe(){ if(navigator.vibrate) navigator.vibrate([120,60,120]); }
+function renderMyTickets(){
+  $('ticketsBody').innerHTML = `
+    <div class="card" onclick="go('s-track')">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><b style="font-size:17px;color:var(--primary)">${tkNum}</b>
+        <div style="font-size:13px;color:var(--text2);margin-top:4px">${lang==='ar'?curEtab.ar:curEtab.fr}</div>
+        <div style="font-size:12.5px;color:var(--text2)">${lang==='ar'?curSvc.ar:curSvc.fr}</div></div>
+        <span class="badge b-green"><span class="dot pulse"></span> LIVE</span>
+      </div></div>`;
+}
+function resetDemo(){
+  clearInterval(timer); pos=0;
+  $('turn').classList.remove('show');
+  $('ticketsBody').innerHTML = `<div class="empty"><div class="e-ic">🎫</div><b>${t('empty')}</b><p style="font-size:13.5px;margin-top:6px">${t('empty2')}</p></div>`;
+  go('s-home');
+}
+
+/* init */
+renderChips(); renderEtabs();
+</script>
+</body>
+</html>
